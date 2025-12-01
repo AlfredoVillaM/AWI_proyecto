@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Libro;
 use App\Models\Prestamo;
 use App\Models\Resena;
+use Dompdf\Dompdf;
 
 class AdminController extends Controller
 {
@@ -14,8 +15,21 @@ class AdminController extends Controller
     }
 
     public function indexLibros() {
-        $libros = Libro::all();
+        $libros = Libro::orderBy('created_at', 'desc')->get();
         return view('admin-libros', compact('libros'));
+    }
+
+    public function generatePdf() {
+        $libros = Libro::all();
+
+        $html = view('admin-libros-pdf', compact('libros'))->render();
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('Letter', 'portrait');
+        $dompdf->render();
+
+        return $dompdf->stream('libros.pdf');
     }
 
     public function saveLibro(Request $request) {

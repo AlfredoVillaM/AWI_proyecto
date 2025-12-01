@@ -16,13 +16,16 @@
   </div>
   <div class="navbar-center hidden lg:flex">
     <ul class="menu menu-horizontal px-1">
+      <li><a>Dashboard</a></li>
       <li><a href='{{ route('admin-libros.index') }}'>Libros</a></li>
       <li><a>Préstamos</a></li>
       <li><a>Colecciones</a></li>
     </ul>
   </div>
   <div class="navbar-end">
-    <a class="btn">Entrar</a>
-    <a class="btn">Registrarse</a>
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button class="btn" type="submit">Salir</button>
+    </form>
   </div>
 </div>
