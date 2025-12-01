@@ -22,7 +22,14 @@ class AuthController extends Controller
 
         if (Auth::attempt($request->only('email', 'password'))) {
             $request->session()->regenerate();
-            return redirect('/admin-libros');
+
+            if (auth()->user()->role === 'admin') {
+                return redirect()->route('admin-dashboard');
+            }
+
+            if (auth()->user()->role === 'client') {
+                return redirect()->route('client-dashboard');
+            }
         }
 
         return back()->withErrors([
@@ -49,7 +56,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect('/admin-libros');
+        return redirect('/client-dashboard');
     }
 
     public function logout(Request $request) {

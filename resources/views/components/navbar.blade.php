@@ -7,19 +7,36 @@
       <ul
         tabindex="-1"
         class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-        <li><a href='{{ route('admin-libros.index') }}'>Libros</a></li>
-        <li><a>Préstamos</a></li>
-        <li><a>Colecciones</a></li>
+        @if(auth()->user()->role === 'admin')
+          <li><a href="{{ route('admin-dashboard') }}">Dashboard</a></li>
+          <li><a href='{{ route('admin-libros.index') }}'>Libros</a></li>
+          <li><a href='{{ route('admin-prestamos.index') }}'>Préstamos</a></li>
+        @endif
+        
+        @if(auth()->user()->role === 'client')
+          <li><a href="{{ route('client-dashboard') }}">Dashboard</a></li>
+          <li><a href='{{ route('client-libros.index') }}'>Libros</a></li>
+          <li><a href='{{ route('client-prestamos.index') }}'>Mis Préstamos</a></li>
+          <li><a href="{{ route('client-colecciones.index') }}">Mis Colecciones</a></li>
+        @endif
       </ul>
     </div>
     <a class="btn btn-ghost text-xl">daisyUI</a>
   </div>
   <div class="navbar-center hidden lg:flex">
     <ul class="menu menu-horizontal px-1">
-      <li><a href="{{ route('admin-dashboard') }}">Dashboard</a></li>
-      <li><a href='{{ route('admin-libros.index') }}'>Libros</a></li>
-      <li><a href='{{ route('admin-prestamos.index') }}'>Préstamos</a></li>
-      <li><a>Colecciones</a></li>
+      @if(auth()->user()->role === 'admin')
+        <li><a href="{{ route('admin-dashboard') }}">Dashboard</a></li>
+        <li><a href='{{ route('admin-libros.index') }}'>Libros</a></li>
+        <li><a href='{{ route('admin-prestamos.index') }}'>Préstamos</a></li>
+      @endif
+
+      @if(auth()->user()->role === 'client')
+        <li><a href="{{ route('client-dashboard') }}">Dashboard</a></li>
+        <li><a href='{{ route('client-libros.index') }}'>Libros</a></li>
+        <li><a href='{{ route('client-prestamos.index') }}'>Mis Préstamos</a></li>
+        <li><a href="{{ route('client-colecciones.index') }}">Mis Colecciones</a></li>
+      @endif
     </ul>
   </div>
   <div class="navbar-end">

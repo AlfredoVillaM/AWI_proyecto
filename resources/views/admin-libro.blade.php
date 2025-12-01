@@ -13,9 +13,6 @@
             <p class="text-lg">Fecha de publicación: {{ $libro->fecha_publicacion }}</p>
             <h3 class="text-2xl font-semibold mt-4">Sinopsis</h3>
             <p class="text-md">{{ $libro->sinopsis }}</p>
-            <div class="card-actions justify-end">
-            <button class="btn btn-primary">Listen</button>
-            </div>
         </div>
     </div>
 
@@ -42,7 +39,7 @@
                 <form method="POST" action="{{ route('admin-libros-resena.delete', $resena->id) }}">
                     @csrf
                     <p>¿Estás seguro de que deseas eliminar esta reseña?</p>
-                    <button type="submit" class="btn btn-neutral">Eliminar</button>
+                    <button type="submit" class="btn btn-neutral">Confirmar</button>
                 </form>
                 <div class="modal-action">
                     <form method="dialog">

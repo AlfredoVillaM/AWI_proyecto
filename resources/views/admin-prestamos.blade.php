@@ -25,7 +25,7 @@
                     <td>{{ $prestamo->fecha_devolucion ?? '~' }}</td>
                     <td>
                         <button
-                            class="btn btn-square"
+                            class="btn"
                             onclick="document.getElementById('update-{{ $prestamo->id }}').showModal()"
                             @if($prestamo->fecha_devolucion) disabled @endif
                         >

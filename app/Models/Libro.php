@@ -13,4 +13,8 @@ class Libro extends Model
     public function prestamos() {
         return $this->hasMany(Prestamo::class);
     }
+
+    public function resenas() {
+        return $this->hasMany(Resena::class);
+    }
 }

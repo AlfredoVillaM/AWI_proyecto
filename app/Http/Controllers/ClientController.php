@@ -8,17 +8,31 @@ use App\Models\Resena;
 use App\Models\Prestamo;
 use App\Models\Coleccion;
 use App\Models\ColeccionLibro;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Correo;
 
 class ClientController extends Controller
 {
     public function dashboard() {
-        return view('client-dashboard');
+        $prestamosPendientes = Prestamo::with('libro')
+        ->where('user_id', auth()->user()->id)
+        ->whereNull('fecha_devolucion')
+        ->count();
+        $totalColecciones = Coleccion::where('user_id', auth()->user()->id)->count();
+
+        $response = Http::withoutVerifying()->get('https://www.positive-api.online/phrase/esp');
+
+        $fraseDelDia = $response->successful()
+            ? $response->json()['text']
+            : 'No se pudo obtener la frase del día.';
+
+        return view('client-dashboard', compact('prestamosPendientes', 'totalColecciones', 'fraseDelDia'));
     }
 
     public function indexLibros() {
-        $libros = Libro::all();
-        $colecciones = Coleccion::where('user_id', auth()->user()->id)->get();
-        return view('client-libros', compact('libros', 'colecciones'));
+        $libros = Libro::orderBy('created_at', 'desc')->get();
+        return view('client-libros', compact('libros'));
     }
 
     public function showLibro($id) {
@@ -54,7 +68,7 @@ class ClientController extends Controller
     }
 
     public function indexPrestamos() {
-        $prestamos = Prestamo::where('user_id', auth()->user()->id)->get();
+        $prestamos = Prestamo::where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->get();
         return view('client-prestamos', compact('prestamos'));
     }
 
@@ -65,7 +79,7 @@ class ClientController extends Controller
         $prestamo->fecha_prestamo = now();
         $prestamo->fecha_limite = now()->addWeeks(2); // 2 semanas para devolver
         $prestamo->save();
-
+        Mail::to(auth()->user()->email)->send(new Correo($prestamo));
         return redirect()->back();
     }
 

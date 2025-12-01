@@ -17,18 +17,6 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/dashboard', function () {
-    $user = auth()->user();
-
-    if ($user && $user->role === 'admin') {
-        return redirect()->route('admin-dashboard');
-    } elseif ($user && $user->role === 'client') {
-        return redirect()->route('client-dashboard');
-    }
-
-    return view('dashboard');
-})->name('dashboard')->middleware('auth');
-
 Route::get('/admin-dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard')->middleware('auth');
 Route::get('/admin-libros', [AdminController::class, 'indexLibros'])->name('admin-libros.index')->middleware('auth');
 Route::post('/admin-libros/save', [AdminController::class, 'saveLibro'])->name('admin-libros.save')->middleware('auth');
@@ -48,7 +36,7 @@ Route::post('/client-libros/resena/{libro_id}/save', [ClientController::class, '
 Route::post('/client-libros/resena/{id}/update', [ClientController::class, 'updateResena'])->name('client-libros-resena.update')->middleware('auth');
 Route::post('/client-libros/resena/{id}/delete', [ClientController::class, 'deleteResena'])->name('client-libros-resena.delete')->middleware('auth');
 Route::get('/client-prestamos', [ClientController::class, 'indexPrestamos'])->name('client-prestamos.index')->middleware('auth');
-Route::get('/client-libros/prestamo/{libro_id}/save', [ClientController::class, 'savePrestamo'])->name('client-libros-prestamo.save')->middleware('auth');
+Route::post('/client-libros/prestamo/{libro_id}/save', [ClientController::class, 'savePrestamo'])->name('client-libros-prestamo.save')->middleware('auth');
 Route::get('/client-colecciones', [ClientController::class, 'indexColecciones'])->name('client-colecciones.index')->middleware('auth');
 Route::post('/client-colecciones/save', [ClientController::class, 'saveColeccion'])->name('client-colecciones.save')->middleware('auth');
 Route::post('/client-colecciones/delete/{id}', [ClientController::class, 'deleteColeccion'])->name('client-colecciones.delete')->middleware('auth');

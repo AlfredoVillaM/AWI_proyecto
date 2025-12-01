@@ -6,6 +6,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Resena;
+use App\Models\Prestamo;
+use App\Models\Coleccion;
 
 class User extends Authenticatable
 {
@@ -44,5 +47,17 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function resenas() {
+        return $this->hasMany(Resena::class);
+    }
+
+    public function prestamos() {
+        return $this->hasMany(Prestamo::class);
+    }
+
+    public function colecciones() {
+        return $this->hasMany(Coleccion::class);
     }
 }
