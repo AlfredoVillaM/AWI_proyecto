@@ -15,7 +15,7 @@
             <p class="text-md">{{ $libro->sinopsis }}</p>
             <div class="card-actions justify-end">
                 <button class="btn btn-primary" onclick="document.getElementById('save-prestamo').showModal()">Préstamo</button>
-                <button class="btn btn-primary">Añadir a colección</button>
+                <button class="btn btn-primary" onclick="document.getElementById('save-coleccion_libro').showModal()">Añadir a colección</button>
             </div>
         </div>
     </div>
@@ -27,6 +27,31 @@
                 @csrf
                 <p>¿Deseas solicitar el préstamo de este libro? La fecha de devolución estimada será el <strong>{{ \Carbon\Carbon::now()->addWeeks(2)->format('Y-m-d') }}</strong>.</p>
                 <button type="submit" class="btn btn-neutral">Confirmar</button>
+            </form>
+            <div class="modal-action">
+                <form method="dialog">
+                    <!-- if there is a button in form, it will close the modal -->
+                    <button class="btn">Close</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
+    
+    <dialog id="save-coleccion_libro" class="modal">
+        <div class="modal-box">
+            <h3 class="text-lg font-bold">Añadir a Colección</h3>
+            <form method="POST" action="{{ route('client-colecciones-libro.save', $libro->id) }}">
+                @csrf
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">Colección</legend>
+                    <select class="select" name="coleccion_id" required>
+                        <option disabled selected>Selecciona una colección</option>
+                        @foreach ($colecciones as $coleccion)
+                            <option value="{{ $coleccion->id }}">{{ $coleccion->nombre }}</option>
+                        @endforeach
+                    </select>
+                </fieldset>
+                <button type="submit" class="btn btn-neutral">Añadir</button>
             </form>
             <div class="modal-action">
                 <form method="dialog">

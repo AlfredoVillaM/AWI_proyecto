@@ -96,6 +96,13 @@ class ClientController extends Controller
         return redirect()->back();
     }
 
+    public function updateColeccion(Request $request, $id) {
+        $coleccion = Coleccion::find($id);
+        $coleccion->nombre = $request->input('nombre');
+        $coleccion->save();
+        return redirect()->back();
+    }
+
     public function deleteColeccion($id) {
         $coleccion = Coleccion::find($id);
         $coleccion->delete();
@@ -120,8 +127,10 @@ class ClientController extends Controller
         return redirect()->back();
     }
 
-    public function deleteColeccionLibro($id) {
-        $coleccionLibro = ColeccionLibro::find($id);
+    public function deleteColeccionLibro($coleccion_id, $libro_id) {
+        $coleccionLibro = ColeccionLibro::where('libro_id', $libro_id)
+            ->where('coleccion_id', $coleccion_id)
+            ->first();
         $coleccionLibro->delete();
         return redirect()->back();
     }

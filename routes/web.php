@@ -39,7 +39,8 @@ Route::get('/client-prestamos', [ClientController::class, 'indexPrestamos'])->na
 Route::post('/client-libros/prestamo/{libro_id}/save', [ClientController::class, 'savePrestamo'])->name('client-libros-prestamo.save')->middleware('auth');
 Route::get('/client-colecciones', [ClientController::class, 'indexColecciones'])->name('client-colecciones.index')->middleware('auth');
 Route::post('/client-colecciones/save', [ClientController::class, 'saveColeccion'])->name('client-colecciones.save')->middleware('auth');
+Route::post('/client-colecciones/update/{id}', [ClientController::class, 'updateColeccion'])->name('client-colecciones.update')->middleware('auth');
 Route::post('/client-colecciones/delete/{id}', [ClientController::class, 'deleteColeccion'])->name('client-colecciones.delete')->middleware('auth');
-Route::post('/client-colecciones/show/{id}', [ClientController::class, 'showColeccion'])->name('client-colecciones.show')->middleware('auth');
+Route::get('/client-colecciones/show/{id}', [ClientController::class, 'showColeccion'])->name('client-colecciones.show')->middleware('auth');
 Route::post('/client-colecciones/libro/{libro_id}/save', [ClientController::class, 'saveColeccionLibro'])->name('client-colecciones-libro.save')->middleware('auth');
-Route::post('/client-colecciones/libro/{libro_id}/delete', [ClientController::class, 'deleteColeccionLibro'])->name('client-colecciones-libro.delete')->middleware('auth');
+Route::post('/client-colecciones/{coleccion_id}/libro/{libro_id}/delete', [ClientController::class, 'deleteColeccionLibro'])->name('client-colecciones-libro.delete')->middleware('auth');
