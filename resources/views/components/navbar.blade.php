@@ -16,9 +16,9 @@
   </div>
   <div class="navbar-center hidden lg:flex">
     <ul class="menu menu-horizontal px-1">
-      <li><a>Dashboard</a></li>
+      <li><a href="{{ route('admin-dashboard') }}">Dashboard</a></li>
       <li><a href='{{ route('admin-libros.index') }}'>Libros</a></li>
-      <li><a>Préstamos</a></li>
+      <li><a href='{{ route('admin-prestamos.index') }}'>Préstamos</a></li>
       <li><a>Colecciones</a></li>
     </ul>
   </div>

@@ -7,29 +7,26 @@ use App\Models\Libro;
 use App\Models\Prestamo;
 use App\Models\Resena;
 use Dompdf\Dompdf;
+use Illuminate\Support\Facades\Http;
 
 class AdminController extends Controller
 {
     public function dashboard() {
-        return view('admin-dashboard');
+        $totalLibros = Libro::count();
+        $prestamosPendientes = Prestamo::whereNull('fecha_devolucion')->count();
+
+        $response = Http::withoutVerifying()->get('https://www.positive-api.online/phrase/esp');
+
+        $fraseDelDia = $response->successful()
+            ? $response->json()['text']
+            : 'No se pudo obtener la frase del día.';
+
+        return view('admin-dashboard', compact('totalLibros', 'prestamosPendientes', 'fraseDelDia'));
     }
 
     public function indexLibros() {
         $libros = Libro::orderBy('created_at', 'desc')->get();
         return view('admin-libros', compact('libros'));
-    }
-
-    public function generatePdf() {
-        $libros = Libro::all();
-
-        $html = view('admin-libros-pdf', compact('libros'))->render();
-
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('Letter', 'portrait');
-        $dompdf->render();
-
-        return $dompdf->stream('libros.pdf');
     }
 
     public function saveLibro(Request $request) {
@@ -99,7 +96,7 @@ class AdminController extends Controller
     }
 
     public function indexPrestamos() {
-        $prestamos = Prestamo::all();
+        $prestamos = Prestamo::orderBy('created_at', 'desc')->get();
         return view('admin-prestamos', compact('prestamos'));
     }
 
@@ -109,5 +106,31 @@ class AdminController extends Controller
         $prestamo->fecha_devolucion = today();
         $prestamo->save();
         return redirect()->back();
+    }
+
+    public function generateLibrosPdf() {
+        $libros = Libro::all();
+
+        $html = view('admin-libros-pdf', compact('libros'))->render();
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('Letter', 'portrait');
+        $dompdf->render();
+
+        return $dompdf->stream('libros.pdf');
+    }
+    
+    public function generatePrestamosPdf() {
+        $prestamos = Prestamo::whereNotNull('fecha_devolucion')->get();
+
+        $html = view('admin-prestamos-pdf', compact('prestamos'))->render();
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('Letter', 'portrait');
+        $dompdf->render();
+
+        return $dompdf->stream('prestamos.pdf');
     }
 }

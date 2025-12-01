@@ -38,7 +38,8 @@ Route::get('/admin-libros/show/{id}', [AdminController::class, 'showLibro'])->na
 Route::post('/admin-libros/resena/{id}/delete', [AdminController::class, 'deleteResena'])->name('admin-libros-resena.delete')->middleware('auth');
 Route::get('/admin-prestamos', [AdminController::class, 'indexPrestamos'])->name('admin-prestamos.index')->middleware('auth');
 Route::post('/admin-prestamos/update/{id}', [AdminController::class, 'updatePrestamo'])->name('admin-prestamos.update')->middleware('auth');
-Route::get('/admin-libros-pdf', [AdminController::class, 'generatePdf'])->name('admin-libros.pdf')->middleware('auth');
+Route::get('/admin-libros-pdf', [AdminController::class, 'generateLibrosPdf'])->name('admin-libros.pdf')->middleware('auth');
+Route::get('/admin-prestamos-pdf', [AdminController::class, 'generatePrestamosPdf'])->name('admin-prestamos.pdf')->middleware('auth');
 
 Route::get('/client-dashboard', [ClientController::class, 'dashboard'])->name('client-dashboard')->middleware('auth');
 Route::get('/client-libros', [ClientController::class, 'indexLibros'])->name('client-libros.index')->middleware('auth');

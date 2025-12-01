@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Libros PDF</title>
+        <title>Préstamos PDF</title>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -25,25 +25,23 @@
         </style>
     </head>
     <body>
-        <h1>Inventario de Libros</h1>
+        <h1>Historial de Préstamos</h1>
         <table>
             <thead>
                 <tr>
-                    <th>ISBN</th>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>Editorial</th>
-                    <th>Fecha de Publicación</th>
+                    <th>Libro</th>
+                    <th>Usuario</th>
+                    <th>Fecha de Préstamo</th>
+                    <th>Fecha de Devolución</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($libros as $libro)
+                @foreach ($prestamos as $prestamo)
                     <tr>
-                        <td>{{ $libro->isbn }}</td>
-                        <td>{{ $libro->titulo }}</td>
-                        <td>{{ $libro->autor }}</td>
-                        <td>{{ $libro->editorial }}</td>
-                        <td>{{ $libro->fecha_publicacion }}</td>
+                        <td>{{ $prestamo->libro->titulo }}</td>
+                        <td>{{ $prestamo->user->name }}</td>
+                        <td>{{ $prestamo->fecha_prestamo }}</td>
+                        <td>{{ $prestamo->fecha_devolucion }}</td>
                     </tr>
                 @endforeach
             </tbody>
