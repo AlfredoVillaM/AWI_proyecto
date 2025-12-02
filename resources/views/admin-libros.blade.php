@@ -1,13 +1,13 @@
 <x-base>
-    <div class="p-6">
-        <div class="text-center mb-12">
+    <div class="p-6 bg-gray-50">
+        <div class="text-center mb-4">
             <div class="relative inline-block">
                 <h1 class="text-4xl md:text-5xl font-bold font-serif italic text-gray-800 mb-1 text-center">Libros</h1>
                 <p class="text-gray-500 text-base font-light tracking-wider mb-1 italic max-w-md mx-auto">Administra el catálogo de libros</p>
                 <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-300 mx-4 md:mx-8 lg:mx-12"></div>
             </div>
         </div>
-        <div class="flex items-center justify-end gap-4 mb-8">
+        <div class="flex items-center justify-end gap-4 mb-4">
             <button onclick="openModal()" class="btn btn-outline btn-primary flex items-center gap-2 cursor-pointer">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -23,29 +23,23 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @foreach ($libros as $libro)
-                <div class="card bg-base-100 shadow-sm hover:shadow-lg transition-shadow duration-300">
-                    <figure class="relative h-48 w-full">
-                        <img src="{{ $libro->portada_base64 }}" alt="{{ $libro->titulo }}" class="w-full h-full object-contain bg-gray-50" />
-                    </figure>
-                    <div class="card-body p-4">
-                        <h2 class="card-title text-lg font-bold text-gray-800 line-clamp-1 text-center">
-                            {{ $libro->titulo }}
-                        </h2>
-                        <p class="text-sm text-gray-600 line-clamp-1 text-center">
-                            {{ $libro->autor }}
-                        </p>
-                        <div class="card-actions justify-end mt-2">
-                            <div class="flex items-center gap-2">
-                                <a href="{{ route('admin-libros.show', $libro->id) }}" class="btn btn-sm btn-outline btn-primary">
-                                    Ver detalles
-                                </a>
-                                <button onclick="document.getElementById('edit-{{ $libro->id }}').showModal()" class="btn btn-sm btn-square btn-outline">
-                                    <x-eos-edit class="h-4 w-4" />
-                                </button>
-                                <button onclick="document.getElementById('delete-{{ $libro->id }}').showModal()" class="btn btn-sm btn-square btn-outline btn-error">
-                                    <x-eos-delete class="h-4 w-4" />
-                                </button>
+                <div class="flip-card w-full h-[420px]">
+                    <div class="flip-inner rounded-xl">
+                        <div class="flip-front p-4 flex flex-col items-center">
+                            <div class="w-full h-72 flex items-center justify-center">
+                                <img src="{{ $libro->portada_base64 }}" alt="{{ $libro->titulo }}" class="max-h-72 object-contain" />
                             </div>
+                            <h2 class="text-xl font-bold text-gray-800 mt-3 text-center">{{ $libro->titulo }}</h2>
+                            <p class="text-sm text-gray-600 text-center -mt-1">{{ $libro->autor }}</p>
+                        </div>
+                        <div class="flip-back bg-violet-100 p-4 rounded-xl shadow-lg flex flex-col items-center justify-center gap-4">
+                            <a href="{{ route('admin-libros.show', $libro->id) }}" class="btn btn-md btn-outline btn-primary w-40">Ver detalles</a>
+                            <button onclick="document.getElementById('edit-{{ $libro->id }}').showModal()" class="btn btn-md btn-outline w-40">
+                                <x-eos-edit class="h-5 w-5" /> Editar
+                            </button>
+                            <button onclick="document.getElementById('delete-{{ $libro->id }}').showModal()" class="btn btn-md btn-outline btn-error w-40">
+                                <x-eos-delete class="h-5 w-5" /> Eliminar
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -62,7 +56,7 @@
                     </div>
                 </div>
             </div>
-            <form method="POST" action="{{ route('admin-libros.save') }}" enctype="multipart/form-data" class="p-4">
+            <form method="POST" action="{{ route('admin-libros.save') }}" enctype="multipart/form-data" class="p-4" onsubmit="showLoadingSpinner(event, this)">
                 @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="space-y-1.5">
@@ -100,8 +94,11 @@
                     <button type="button" onclick="modal.close()" class="cursor-pointer px-5 py-2.5 text-gray-600 bg-white border border-purple-100 rounded-lg font-medium hover:bg-purple-50/50 hover:border-purple-200 transition-all duration-200">
                         Cancelar
                     </button>
-                    <button type="submit" class=" cursor-pointer px-5 py-2.5 bg-linear-to-r from-purple-500 to-purple-600 text-white rounded-lg font-medium hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md shadow-purple-200">
-                        Añadir
+                    <button type="submit" class="submit-btn cursor-pointer px-5 py-2.5 bg-linear-to-r from-purple-500 to-purple-600 text-white rounded-lg font-medium hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md shadow-purple-200 relative">
+                        <span class="submit-text">Añadir</span>
+                        <div class="loading-spinner hidden absolute inset-0 flex items-center justify-center">
+                            <div class="spinner"></div>
+                        </div>
                     </button>
                 </div>
             </form>
@@ -121,7 +118,7 @@
                         </div>
                     </div>
                 </div>
-                <form method="POST" action="{{ route('admin-libros.update', $libro->id) }}" enctype="multipart/form-data" class="p-4">
+                <form method="POST" action="{{ route('admin-libros.update', $libro->id) }}" enctype="multipart/form-data" class="p-4" onsubmit="showLoadingSpinner(event, this)">
                     @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="space-y-1.5">
@@ -162,8 +159,11 @@
                         <button type="button" onclick="this.closest('dialog').close()" class="cursor-pointer px-5 py-2.5 text-gray-600 bg-white border border-blue-100 rounded-lg font-medium hover:bg-blue-50/50 hover:border-blue-200 transition-all duration-200">
                             Cancelar
                         </button>
-                        <button type="submit" class="cursor-pointer px-5 py-2.5 bg-linear-to-r from-blue-500 to-blue-600 text-white rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-sm hover:shadow-md shadow-blue-200">
-                            Guardar Cambios
+                        <button type="submit" class="submit-btn cursor-pointer px-5 py-2.5 bg-linear-to-r from-blue-500 to-blue-600 text-white rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-sm hover:shadow-md shadow-blue-200 relative">
+                            <span class="submit-text">Guardar Cambios</span>
+                            <div class="loading-spinner hidden absolute inset-0 flex items-center justify-center">
+                                <div class="spinner"></div>
+                            </div>
                         </button>
                     </div>
                 </form>
@@ -176,26 +176,16 @@
             <div class="modal-box max-w-md p-0 overflow-hidden bg-linear-to-b from-white to-red-50/30 rounded-2xl shadow-2xl shadow-red-200/50">
                 <div class="border-b border-red-100/50 bg-linear-to-r from-white to-red-50/40 p-6 text-center">
                     <div class="flex flex-col items-center gap-3">
-                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-red-50 to-red-100/80 flex items-center justify-center">
-                            <svg class="w-7 h-7 text-red-600" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
-                            </svg>
-                        </div>
                         <div>
                             <h3 class="text-xl font-semibold text-gray-800">Eliminar Libro</h3>
                             <p class="text-red-600/70 text-sm mt-1">Esta acción no se puede deshacer</p>
                         </div>
                     </div>
                 </div>
-                
-                <form method="POST" action="{{ route('admin-libros.delete', $libro->id) }}" class="p-6">
+                <form method="POST" action="{{ route('admin-libros.delete', $libro->id) }}" class="p-6" onsubmit="showLoadingSpinner(event, this)">
                     @csrf
                     <div class="text-center">
-                        <p class="text-gray-700 mb-4">
-                            ¿Estás seguro de eliminar el libro 
-                            <span class="font-semibold text-gray-800">{{ $libro->titulo }}</span> 
-                            de {{ $libro->autor }}?
-                        </p>
+                        <p class="text-gray-700 mb-4">¿Estás seguro de eliminar el libro <span class="font-semibold text-gray-800">{{ $libro->titulo }}</span> de {{ $libro->autor }}?</p>
                         <div class="mb-6 p-3 bg-red-50/50 border border-red-100 rounded-lg text-sm text-red-700/80">
                             <div class="flex items-center gap-2 justify-center">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -204,15 +194,15 @@
                                 <span>Todos los datos relacionados se perderán permanentemente</span>
                             </div>
                         </div>
-                        
                         <div class="pt-6 border-t border-red-100 flex justify-center gap-3">
-                            <button type="button" onclick="this.closest('dialog').close()"
-                                    class="cursor-pointer px-5 py-2.5 text-gray-600 bg-white border border-red-100 rounded-lg font-medium hover:bg-red-50/50 hover:border-red-200 transition-all duration-200">
+                            <button type="button" onclick="this.closest('dialog').close()" class="cursor-pointer px-5 py-2.5 text-gray-600 bg-white border border-red-100 rounded-lg font-medium hover:bg-red-50/50 hover:border-red-200 transition-all duration-200">
                                 Cancelar
                             </button>
-                            <button type="submit" 
-                                    class="cursor-pointer px-5 py-2.5 bg-linear-to-r from-red-500 to-red-600 text-white rounded-lg font-medium hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-sm hover:shadow-md shadow-red-200">
-                                Eliminar
+                            <button type="submit" class="submit-btn cursor-pointer px-5 py-2.5 bg-linear-to-r from-red-500 to-red-600 text-white rounded-lg font-medium hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-sm hover:shadow-md shadow-red-200 relative">
+                                <span class="submit-text">Eliminar</span>
+                                <div class="loading-spinner hidden absolute inset-0 flex items-center justify-center">
+                                    <div class="spinner"></div>
+                                </div>
                             </button>
                         </div>
                     </div>
@@ -228,37 +218,42 @@
 <script>
     const modal = document.getElementById('save_libro');
     const form  = modal.querySelector('form');
-
     function openModal() {
-        // Limpia todos los inputs
         form.reset();
-
-        // Limpia el input file manualmente
         const fileInput = form.querySelector('input[type="file"]');
         if (fileInput) fileInput.value = "";
-
-        // Abre el modal
         modal.showModal();
+    }
+    function showLoadingSpinner(event, formElement) {
+        event.preventDefault();
+        const submitBtn = formElement.querySelector('.submit-btn');
+        const submitText = submitBtn.querySelector('.submit-text');
+        const loadingSpinner = submitBtn.querySelector('.loading-spinner');
+        if (submitText) submitText.classList.add('hidden');
+        if (loadingSpinner) loadingSpinner.classList.remove('hidden');
+        submitBtn.disabled = true;
+        setTimeout(() => {
+            formElement.submit();
+        }, 50);
     }
 </script>
 
 <style>
-    .line-clamp-1 {
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 1;
+    .line-clamp-1{overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1;}
+    .line-clamp-2{overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;}
+    .modal-box{max-height: 90vh; overflow-y: auto;}
+    .spinner{width: 20px; height: 20px; border: 3px solid rgba(255, 255, 255, 0.3); border-top: 3px solid #fff; border-radius: 50%; animation: spin 0.8s linear infinite;}
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
-    
-    .line-clamp-2 {
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-    }
-    
-    .modal-box {
-        max-height: 90vh;
-        overflow-y: auto;
-    }
+    .loading-spinner{display: flex; align-items: center; justify-content: center;}
+    .hidden{display: none;}
+    .submit-btn{position: relative;min-height: 45px;}
+    .submit-btn:disabled{opacity: 0.8;cursor: not-allowed;}
+    .flip-card{perspective: 1000px;}
+    .flip-inner{position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d;}
+    .flip-card:hover .flip-inner{transform: rotateY(180deg);}
+    .flip-front, .flip-back{position: absolute; width: 100%; height: 100%; backface-visibility: hidden;}
+    .flip-back{transform: rotateY(180deg);}
 </style>
